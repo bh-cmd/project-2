@@ -64,12 +64,15 @@ st.markdown("""
 # ----------------------------------------------------
 @st.cache_data
 def load_data():
-    companies_file = "data/companies.csv"
-    scores_file = "data/lead_scores.csv"
-    exhibitions_file = "data/exhibitions.csv"
+    # 현재 파일(app.py)의 위치를 기준으로 상위 폴더(프로젝트 루트) 경로 계산
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    
+    companies_file = os.path.join(BASE_DIR, "data", "companies.csv")
+    scores_file = os.path.join(BASE_DIR, "data", "lead_scores.csv")
+    exhibitions_file = os.path.join(BASE_DIR, "data", "exhibitions.csv")
     
     if not os.path.exists(companies_file) or not os.path.exists(scores_file):
-        st.error("⚠️ 데이터 파일이 유실되었거나 아직 스코어링이 실행되지 않았습니다. 백엔드 로직을 실행해주세요.")
+        st.error(f"⚠️ 데이터 파일이 유실되었거나 아직 스코어링이 실행되지 않았습니다. (확인 경로: {companies_file})")
         return None, None
         
     df_comp = pd.read_csv(companies_file, encoding="utf-8-sig")
