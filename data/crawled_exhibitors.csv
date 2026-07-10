@@ -1,0 +1,41 @@
+﻿company_id,company_name,product_name,booth_number,category,employee_count,has_export,website_quality_score,email_trust_score
+CRAWL_1000,용융함초죽염,물에 타서 마시는 건강한 미넬랄 소금! 용융함초죽염,HALL_A_001,Food,5,True,69,95
+CRAWL_1001,참가 브랜드,수박식빵,HALL_A_002,Food,120,True,85,78
+CRAWL_1002,교정기,일자목 거북목 목디스크 치료를 목적으로 개발된 경추 목 교정기,HALL_A_003,Living,12,False,81,78
+CRAWL_1003,흑돼지,제주도에 가지 않아도 맛 볼 수 있는 제주 흑돼지,HALL_A_004,Food,12,False,46,69
+CRAWL_1004,간식,한입 시식으로 구매가 이어지는 현미 샌드 간식,HALL_A_005,Food,12,True,62,91
+CRAWL_1005,자연,향을 담은 프리미엄 가죽나물 장아찌와 오곡스낵,HALL_A_006,Living,120,False,84,92
+CRAWL_1006,홈런,홈러닝 교육 콘텐츠 아이스크림 홈런,HALL_A_007,Food,12,True,52,52
+CRAWL_1007,지역,맛을 가장 신선하게 강원도,HALL_A_008,Food,45,False,43,78
+CRAWL_1008,흑관장,흑삼 시대가 왔다 흑삼은 흑관장,HALL_A_009,Food,24,True,89,64
+CRAWL_1009,삼짱부각,9가지 바삭함 어디까지 먹어봤니 오손도손 삼짱부각,HALL_A_010,Food,12,False,46,83
+CRAWL_1010,디바이스까지,AI 보드게임부터 헤어가전 디바이스까지,HALL_A_011,Food,12,False,54,66
+CRAWL_1011,정읍,자연을 담은 건강한 가공식품,HALL_A_012,Food,12,False,52,96
+CRAWL_1012,천년,시간이 빚어낸 보령 검은 돌,HALL_A_013,Food,120,True,89,74
+CRAWL_1013,오란다강정,한입 먹고 반하는 청주애愛 오란다강정,HALL_A_014,Food,12,False,68,80
+CRAWL_1014,보물밥,씻고 다듬는 번거로움 끝 바로 넣어 완성하는 채소생활 보물밥,HALL_A_015,Food,12,False,52,83
+CRAWL_1015,아이템,일상에서 자꾸만 손이 가는 핸드메이드 패브릭 아이템,HALL_A_016,Living,45,True,92,75
+CRAWL_1016,수제,품격과 달콤함을 담은 냠몽몽 디저트,HALL_A_017,Food,12,False,75,96
+CRAWL_1017,우리가족,우리가족 최애간식 흥부각기가막혀 남원찹쌀김부각,HALL_A_018,Food,45,False,92,65
+CRAWL_1018,100년 가게 장인들,맑은 기름을 맑은 정성을 전합니다,HALL_A_019,Food,24,False,94,68
+CRAWL_1019,M,스트레스와 장 컨디션을 동시에 프리미엄 정신 유산균 홀로바이오틱스 M,HALL_A_020,Food,120,True,48,75
+CRAWL_1020,영보진단,맛으로 전하는 품격 선물로 전하는 활력 영보진단,HALL_A_021,Food,12,False,65,71
+CRAWL_1021,먹거리,우리 가족이 먹는 마음으로 몸에 좋은 먹거리,HALL_A_022,Food,24,False,71,84
+CRAWL_1022,연백딸기모찌,백화점에서 줄 서서 먹던 그 맛 연백딸기모찌,HALL_A_023,Food,5,False,88,82
+CRAWL_1023,보드게임,예술 교육 기반 자체 제작 지역화 보드게임,HALL_A_024,Food,24,True,64,60
+CRAWL_1024,자연다감,시간이 빚어낸 우리 음식 자연다감,HALL_A_025,Food,45,False,72,83
+CRAWL_1025,여행,더 킬바사 한입이면 여기가 바로 이탈리아 여행,HALL_A_026,Food,5,False,43,72
+CRAWL_1026,않았습니다,선별부터 포장까지 타협하지 않았습니다,HALL_A_027,Food,45,False,82,52
+CRAWL_1027,닭발편육,아이들이 잘 먹는 편육! 매콤한 야식 닭발편육,HALL_A_028,Food,24,True,94,60
+CRAWL_1028,쓱쓱,건강한 식탁을 간편하게 따뜻한 밥에 곤드레 쓱쓱,HALL_A_029,Food,45,True,47,61
+CRAWL_1029,청주,숨겨진 가치를 발견하다,HALL_A_030,Food,24,False,91,99
+CRAWL_1030,충분해요,매일 쓰는 기초 루틴 제주랩스 하나면 충분해요,HALL_A_031,Food,12,False,74,76
+CRAWL_1031,바다,깊은 맛부터 땅,HALL_A_032,Food,5,False,60,58
+CRAWL_1032,생강청,저속착즙저온가열 프리미엄 수제 생강청,HALL_A_033,Food,12,True,55,71
+CRAWL_1033,생리대,피톤치드 에센셜 오일을 담은 유기농 생리대,HALL_A_034,Food,120,False,76,67
+CRAWL_1034,자연주의케어,숲속에서 온 반려견 자연주의케어,HALL_A_035,Food,45,True,75,81
+CRAWL_1035,팥콩두유,고단백 무가당 비건밀크 콩비린내 없는 팥콩두유,HALL_A_036,Food,24,True,52,76
+CRAWL_1036,막창,까다로운 사람이 만드는 막창,HALL_A_037,Food,12,False,51,73
+CRAWL_1037,코다리와,코다리와 양념을 먹기 쉽게 직화로 구운 속초코다리구이,HALL_A_038,Food,5,False,72,76
+CRAWL_1038,액상티,할리스테라로사가 선택한 깊은 맛 10초 완성 프리미엄 액상티,HALL_A_039,Food,120,False,45,74
+CRAWL_1039,주방템,깔끔한 주방을 위한 필수 주방템,HALL_A_040,Food,45,False,91,64
