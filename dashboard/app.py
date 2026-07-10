@@ -251,6 +251,46 @@ if df is not None:
     elif export_filter == "내수 기업만 (False)":
         filtered_df = filtered_df[filtered_df["has_export"].astype(str).str.lower() == "false"]
 
+    # 6) 프로젝트 최종 산출물 다운로드 섹션 (구글 드라이브 업로드용)
+    st.sidebar.markdown("---")
+    st.sidebar.header("📥 성과 문서 다운로드")
+    st.sidebar.markdown("구글 드라이브 및 구글 문서에 즉시 로드 가능한 고도화된 보고서와 PPT 대본을 직접 다운로드 받으세요.")
+    
+    # 보고서 파일 읽기
+    report_path = os.path.join(BASE_DIR, "final_report.md")
+    report_content = ""
+    if os.path.exists(report_path):
+        with open(report_path, "r", encoding="utf-8") as f:
+            report_content = f.read()
+    else:
+        report_content = "⚠️ 최종 결과 보고서 파일이 로컬에 없습니다."
+        
+    # 발표 슬라이드 대본 읽기
+    slides_path = os.path.join(BASE_DIR, "presentation_slides.md")
+    slides_content = ""
+    if os.path.exists(slides_path):
+        with open(slides_path, "r", encoding="utf-8") as f:
+            slides_content = f.read()
+    else:
+        slides_content = "⚠️ 발표자료 대본 파일이 로컬에 없습니다."
+
+    # 다운로드 버튼 렌더링
+    st.sidebar.download_button(
+        label="📄 결과 보고서 (.md) 다운로드",
+        data=report_content,
+        file_name="소비재_전시회_리드분석_최종보고서.md",
+        mime="text/markdown",
+        key="download_report"
+    )
+    
+    st.sidebar.download_button(
+        label="🖥️ 발표 슬라이드 & 대본 다운로드",
+        data=slides_content,
+        file_name="소비재_전시회_리드분석_발표슬라이드_대본.md",
+        mime="text/markdown",
+        key="download_slides"
+    )
+
     # ----------------------------------------------------
     # 4. 메인 화면 헤더 및 KPI 요약 카드 영역
     # ----------------------------------------------------
