@@ -63,59 +63,104 @@ st.markdown("""
 # 2. 데이터 로드 및 전처리 함수
 # ----------------------------------------------------
 @st.cache_data
-def load_data():
+def load_data(dataset_choice):
     # 현재 파일(app.py)의 위치를 기준으로 상위 폴더(프로젝트 루트) 경로 계산
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
-    companies_file = os.path.join(BASE_DIR, "data", "companies.csv")
-    scores_file = os.path.join(BASE_DIR, "data", "lead_scores.csv")
-    exhibitions_file = os.path.join(BASE_DIR, "data", "exhibitions.csv")
-    
-    if not os.path.exists(companies_file) or not os.path.exists(scores_file):
-        st.error(f"⚠️ 데이터 파일이 유실되었거나 아직 스코어링이 실행되지 않았습니다. (확인 경로: {companies_file})")
-        return None, None
+    if dataset_choice == "샘플 가상 데이터":
+        companies_file = os.path.join(BASE_DIR, "data", "companies.csv")
+        scores_file = os.path.join(BASE_DIR, "data", "lead_scores.csv")
+        exhibitions_file = os.path.join(BASE_DIR, "data", "exhibitions.csv")
         
-    df_comp = pd.read_csv(companies_file, encoding="utf-8-sig")
-    df_score = pd.read_csv(scores_file, encoding="utf-8-sig")
-    df_exh = pd.read_csv(exhibitions_file, encoding="utf-8-sig") if os.path.exists(exhibitions_file) else None
-    
-    # 두 데이터셋 머지 (기업 마스터 데이터 + 스코어 정보)
-    # 중복방지를 위해 score 데이터는 필요한 컬럼만 추출
-    df_merged = pd.merge(df_comp, df_score[["company_id", "score", "breakdown"]], on="company_id")
-    
-    # 전시회명이 있을 경우 머지하여 결합
-    if df_exh is not None:
-        df_merged = pd.merge(df_merged, df_exh[["exhibition_id", "name"]], on="exhibition_id", how="left")
-        df_merged = df_merged.rename(columns={"name": "exhibition_name"})
-    else:
-        df_merged["exhibition_name"] = df_merged["exhibition_id"]
-        
-    # breakdown 컬럼 (JSON 문자열)을 개별 세부 점수 컬럼으로 파싱
-    def parse_breakdown(row):
-        try:
-            b_dict = json.loads(row["breakdown"])
-            return pd.Series([
-                b_dict.get("website", 0.0),
-                b_dict.get("export", 0.0),
-                b_dict.get("employee", 0.0),
-                b_dict.get("email", 0.0)
-            ])
-        except Exception:
-            return pd.Series([0.0, 0.0, 0.0, 0.0])
+        if not os.path.exists(companies_file) or not os.path.exists(scores_file):
+            st.error(f"⚠️ 데이터 파일이 유실되었거나 아직 스코어링이 실행되지 않았습니다. (확인 경로: {companies_file})")
+            return None, None
             
-    df_merged[[
-        "score_website", "score_export", "score_employee", "score_email"
-    ]] = df_merged.apply(parse_breakdown, axis=1)
-    
-    return df_merged, df_exh
+        df_comp = pd.read_csv(companies_file, encoding="utf-8-sig")
+        df_score = pd.read_csv(scores_file, encoding="utf-8-sig")
+        df_exh = pd.read_csv(exhibitions_file, encoding="utf-8-sig") if os.path.exists(exhibitions_file) else None
+        
+        # 두 데이터셋 머지 (기업 마스터 데이터 + 스코어 정보)
+        df_merged = pd.merge(df_comp, df_score[["company_id", "score", "breakdown"]], on="company_id")
+        
+        # 전시회명이 있을 경우 머지하여 결합
+        if df_exh is not None:
+            df_merged = pd.merge(df_merged, df_exh[["exhibition_id", "name"]], on="exhibition_id", how="left")
+            df_merged = df_merged.rename(columns={"name": "exhibition_name"})
+        else:
+            df_merged["exhibition_name"] = df_merged["exhibition_id"]
+            
+        # breakdown 컬럼 (JSON 문자열)을 개별 세부 점수 컬럼으로 파싱
+        def parse_breakdown(row):
+            try:
+                b_dict = json.loads(row["breakdown"])
+                return pd.Series([
+                    b_dict.get("website", 0.0),
+                    b_dict.get("export", 0.0),
+                    b_dict.get("employee", 0.0),
+                    b_dict.get("email", 0.0)
+                ])
+            except Exception:
+                return pd.Series([0.0, 0.0, 0.0, 0.0])
+                
+        df_merged[[
+            "score_website", "score_export", "score_employee", "score_email"
+        ]] = df_merged.apply(parse_breakdown, axis=1)
+        
+        return df_merged, df_exh
+        
+    else:  # "실시간 메가쇼 크롤링 데이터"
+        crawled_file = os.path.join(BASE_DIR, "data", "crawled_exhibitors.csv")
+        if not os.path.exists(crawled_file):
+            st.error(f"⚠️ 크롤링된 실시간 데이터 파일이 존재하지 않습니다. (확인 경로: {crawled_file})")
+            return None, None
+            
+        df_crawled = pd.read_csv(crawled_file, encoding="utf-8-sig")
+        df_crawled["exhibition_name"] = "메가쇼 (Mega Show)"
+        
+        # 실시간 데이터에 대한 가중치 스코어링 동적 연산 수행 (weights: 웹30, 수출25, 규모20, 메일25)
+        # 1) 웹사이트 퀄리티 스코어
+        df_crawled["score_website"] = (df_crawled["website_quality_score"] / 100.0) * 30.0
+        
+        # 2) 수출 지원 스코어
+        if df_crawled["has_export"].dtype == object:
+            has_export_bool = df_crawled["has_export"].astype(str).str.lower() == "true"
+        else:
+            has_export_bool = df_crawled["has_export"].astype(bool)
+        df_crawled["score_export"] = has_export_bool.apply(lambda x: 25.0 if x else 0.0)
+        
+        # 3) 직원수 규모 스코어
+        def get_employee_score(emp_count):
+            if emp_count >= 100:
+                return 20.0
+            elif emp_count >= 50:
+                return 15.0
+            elif emp_count >= 10:
+                return 10.0
+            else:
+                return 5.0
+        df_crawled["score_employee"] = df_crawled["employee_count"].apply(get_employee_score)
+        
+        # 4) 이메일 신뢰도 스코어
+        df_crawled["score_email"] = (df_crawled["email_trust_score"] / 100.0) * 25.0
+        
+        # 5) 종합 스코어 연산
+        df_crawled["score"] = (df_crawled["score_website"] + df_crawled["score_export"] + df_crawled["score_employee"] + df_crawled["score_email"]).round(1)
+        
+        return df_crawled, None
 
-df, df_exh = load_data()
+
+# ----------------------------------------------------
+# 3. 사이드바 데이터셋 선택 및 필터 패널
+# ----------------------------------------------------
+st.sidebar.image("https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=300&q=80", caption="🎯 K-Expo LeadGen Lite", use_column_width=True)
+st.sidebar.header("📊 데이터 설정")
+dataset_choice = st.sidebar.selectbox("분석 대상 데이터 선택", ["샘플 가상 데이터", "실시간 메가쇼 크롤링 데이터"])
+
+df, df_exh = load_data(dataset_choice)
 
 if df is not None:
-    # ----------------------------------------------------
-    # 3. 사이드바 검색 및 필터 패널
-    # ----------------------------------------------------
-    st.sidebar.image("https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=300&q=80", caption="🎯 K-Expo LeadGen Lite", use_column_width=True)
+    st.sidebar.markdown("---")
     st.sidebar.header("🔍 필터 옵션")
     
     # 1) 기업명 검색
@@ -131,6 +176,8 @@ if df is not None:
     
     # 4) 최소 Lead Score 슬라이더
     min_score, max_score = int(df["score"].min()), int(df["score"].max())
+    if min_score == max_score:
+        max_score = min_score + 1
     score_range = st.sidebar.slider("Lead Score 범위", min_score, max_score, (min_score, max_score))
     
     # 5) 수출 기업 여부 필터
@@ -290,15 +337,21 @@ if df is not None:
     st.markdown("### 📋 참관 기업 리드 상세 목록")
     
     # 1) 컬럼 정렬 및 가독성 좋은 한글 라벨링 처리
-    display_df = filtered_df[[
-        "company_id", "company_name", "category", "exhibition_name", 
-        "booth_number", "employee_count", "has_export", "score",
+    cols_to_include = ["company_id", "company_name"]
+    if "product_name" in filtered_df.columns:
+        cols_to_include.append("product_name")
+        
+    cols_to_include.extend([
+        "category", "exhibition_name", "booth_number", "employee_count", "has_export", "score",
         "score_website", "score_export", "score_employee", "score_email"
-    ]].copy()
+    ])
     
-    display_df = display_df.rename(columns={
+    display_df = filtered_df[cols_to_include].copy()
+    
+    rename_dict = {
         "company_id": "기업 ID",
         "company_name": "기업명",
+        "product_name": "대표 전시품",
         "category": "카테고리",
         "exhibition_name": "전시회명",
         "booth_number": "부스 번호",
@@ -309,7 +362,8 @@ if df is not None:
         "score_export": "수출 가산점",
         "score_employee": "규모 점수",
         "score_email": "이메일 점수"
-    })
+    }
+    display_df = display_df.rename(columns=rename_dict)
     
     # 2) 데이터 정렬 (Lead Score 기준 내림차순 디폴트)
     display_df = display_df.sort_values(by="Lead Score (종합)", ascending=False)
